@@ -32,6 +32,7 @@ namespace vkt {
         if(vkAllocateCommandBuffers(m_device.device(), &allocInfo, m_commandBuffers.data()) != VK_SUCCESS){
             throw std::runtime_error("failed to allocate command buffers!");
         }
+        
     }
 
     void vktRenderer::freeCommandBuffers()

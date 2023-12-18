@@ -19,6 +19,7 @@ namespace vkt{
         VkExtent2D getExtent() { return { static_cast<uint32_t>(m_width), static_cast<uint32_t>(m_height) }; }
         bool wasWindowResized() { return m_framebufferResized; }
         void resetWindowResizedFlag() { m_framebufferResized = false; }
+        GLFWwindow* getGLFWwindow() { return m_window; }
         
         void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 

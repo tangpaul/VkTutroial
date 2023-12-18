@@ -30,6 +30,8 @@ set(GLM_SOURCE_DIR ${VENDOR_DIR}/glm)
 # imgui
 set(IMGUI_SOURCE_DIR ${VENDOR_DIR}/imgui)
 file(GLOB IMGUI_SOURCE_FILE  "${IMGUI_SOURCE_DIR}/*.cpp")
+# tinyobjloader
+set(TINYOBJLOADER_SOURCE_DIR ${VENDOR_DIR}/tinyobjloader)
 
 #glfw
 set(GLFW_DIR ${VENDOR_DIR}/GLFW)
@@ -54,6 +56,7 @@ target_include_directories(VkTutorial PRIVATE
                             ${GLM_SOURCE_DIR}
                             ${IMGUI_SOURCE_DIR}
                             ${Vulkan_INCLUDE_DIRS}
+                            ${TINYOBJLOADER_SOURCE_DIR}
                             )
 add_dependencies(VkTutorial RunScriptBeforeBuild)
 # 链接库

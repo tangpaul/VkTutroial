@@ -10,7 +10,7 @@ namespace vkt {
 
 class vktEngineSwapChain {
  public:
-  static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
+  static constexpr int MAX_FRAMES_IN_FLIGHT = 3;
 
   vktEngineSwapChain(vktEngineDevice &deviceRef, VkExtent2D windowExtent);
   vktEngineSwapChain(vktEngineDevice &deviceRef, VkExtent2D windowExtent,

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "vktDescriptors.hpp"
 #include "vktwindow.h"
 #include "vktPipeline.hpp"
 #include "vktEngineDevice.hpp"
@@ -28,16 +29,11 @@ namespace vkt{
     private:
         void loadGameObjects();
 
-        void sierpinski(std::vector<vktModel::Vertex> &vertices,
-                        int depth,
-                        glm::vec2 left,
-                        glm::vec2 right,
-                        glm::vec2 top);
-
         vtwindow m_window{WIDTH, HEIGHT, "VulkanTest"};
         vktEngineDevice m_device{m_window};
         vktRenderer m_renderer{m_window, m_device};
-        
+
+        std::unique_ptr<vktDescriptorPool> globalPool{};
         std::vector<VktGameObject> m_gameObjects;
     };
 

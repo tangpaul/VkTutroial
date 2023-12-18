@@ -2,25 +2,23 @@
 
 #include "vktModel.hpp"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <memory>
 
 namespace vkt
 {
-    struct Transform2dComponent
+    struct TransformComponent
     {
-        glm::vec2 translation{};
-        glm::vec2 scale{1.0f, 1.0f};
-        float rotation;
+        glm::vec3 translation{};
+        glm::vec3 scale{1.0f, 1.0f, 1.0f};
+        glm::vec3 rotation{};
 
-        glm::mat2 mat2(){
-            const float s = glm::sin(rotation);
-            const float c = glm::cos(rotation);
-            glm::mat2 rotationMat{{c, s}, {-s, c}};
-
-            glm::mat2 scaleMat{{scale.x, 0.0f}, {0.0f, scale.y}};
-            // return scaleMat * rotationMat;
-            return rotationMat * scaleMat;
-        }
+        // Matrix corrsponds to Translate * Ry * Rx * Rz * Scale
+        // Rotations correspond to Tait-bryan angles of Y(1), X(2), Z(3)
+        // https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
+        glm::mat4 mat4();
+        glm::mat3 normalMaxtrix();
     };
 
     class VktGameObject
@@ -46,7 +44,7 @@ namespace vkt
         
         std::shared_ptr<vktModel> model;
         glm::vec3 color{};
-        Transform2dComponent transform2d{};
+        TransformComponent transform{};
 
     private:
         VktGameObject(id_t objid) : m_id(objid) {}

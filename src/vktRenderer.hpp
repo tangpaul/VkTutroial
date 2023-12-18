@@ -22,6 +22,7 @@ namespace vkt{
         vktRenderer& operator=(const vktRenderer&) = delete;
 
         VkRenderPass getSwapChainRenderPass() const { return m_swapChain->getRenderPass(); }
+        float getAspectRatio() const { return m_swapChain->extentAspectRatio(); }
 
         bool isFrameInProgress() const {return isFrameStarted;}
 
