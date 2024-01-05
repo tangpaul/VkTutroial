@@ -89,7 +89,7 @@ void vktBuffer::writeToBuffer(void *data, VkDeviceSize size, VkDeviceSize offset
     char *memOffset = (char *)mapped;
     memOffset += offset;
     memcpy(memOffset, data, size);
-  }
+  }    
 }
  
 /**
@@ -103,7 +103,7 @@ void vktBuffer::writeToBuffer(void *data, VkDeviceSize size, VkDeviceSize offset
  *
  * @return VkResult of the flush call
  */
-VkResult vktBuffer::flush(VkDeviceSize size, VkDeviceSize offset) {
+VkResult vktBuffer:: flush(VkDeviceSize size, VkDeviceSize offset) {
   VkMappedMemoryRange mappedRange = {};
   mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
   mappedRange.memory = memory;

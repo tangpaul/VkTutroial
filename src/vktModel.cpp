@@ -61,7 +61,7 @@ namespace vkt
     void vktModel::draw(VkCommandBuffer commandBuffer)
     {
         if(hasIndexBuffer) {
-            vkCmdDrawIndexed(commandBuffer, m_indexCount,1 , 0, 0, 0);
+            vkCmdDrawIndexed(commandBuffer, m_indexCount, 1 , 0, 0, 0);
         } else {
             vkCmdDraw(commandBuffer, m_vertexCount, 1, 0, 0);
         }

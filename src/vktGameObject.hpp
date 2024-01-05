@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <memory>
+#include <unordered_map>
 
 namespace vkt
 {
@@ -25,6 +26,7 @@ namespace vkt
     {
     public:
         using id_t = unsigned int;
+        using Map = std::unordered_map<id_t, VktGameObject>;
 
         static VktGameObject createGameObject(){
             static id_t id = 0;

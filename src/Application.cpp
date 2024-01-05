@@ -15,13 +15,16 @@
 #include <chrono>
 #include <iostream>
 #include <iomanip>
-
+#define _USE_MATH_DEFINES 
+#include <math.h>
 namespace vkt {
 
     struct GLobalUbo
     {
-        alignas(16) glm::mat4 projectionView{1.f};
-        alignas(16) glm::vec3 lightDirection = glm::normalize(glm::vec3{-1.f, 3.f, 1.f});
+        glm::mat4 projectionView{1.f};
+        glm::vec4 ambientColor{1.f, 1.f, 1.f, .02f}; // 0.02 is ambient strength
+        glm::vec3 lightPosition{-1.f};
+        alignas(16) glm::vec4 lightColor{1.f}; // w is light strength
     };
 
     Application::Application(){
@@ -61,7 +64,7 @@ namespace vkt {
         }
 
         auto globalSetLayout = vktDescriptorSetLayout::Builder(m_device)
-            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
             .build();
 
         std::vector<VkDescriptorSet> globalDescriptorSets(vktEngineSwapChain::MAX_FRAMES_IN_FLIGHT);
@@ -84,10 +87,12 @@ namespace vkt {
 
         //set keyboard controller
         auto viewerObject = VktGameObject::createGameObject();
+        viewerObject.transform.translation.z = -2.5f;
         KeyboardMovementController cameraController{};
 
         auto currentTime = std::chrono::high_resolution_clock::now();
 
+        float theta = 0.f;      
         while(!m_window.shouldClose()){
             glfwPollEvents();
 
@@ -99,19 +104,22 @@ namespace vkt {
             cameraController.moveInPlaneXZ(m_window.getGLFWwindow(), frameTime, viewerObject);
             camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
+            theta = theta + (frameTime * M_PI);
+            theta = fmod(theta, 2 * M_PI);
+            glm::vec3 dynamicLightPosition = glm::normalize(glm::vec3{-cos(theta), -1, -sin(theta)});
+
             float aspectRatio = m_renderer.getAspectRatio();
-            camera.setPerspectiveProjection(glm::radians(50.f), aspectRatio, 0.1f, 20.f);
+            camera.setPerspectiveProjection(glm::radians(50.f), aspectRatio, 0.1f, 100.f);
 
             if(auto commandBuffer = m_renderer.beginFrame()){
                 int frameIndex = m_renderer.getFrameIndex();
-                std::cout << "Frame Index: " << frameIndex << std::endl;
                 vktFrameInfo frameInfo{frameIndex, frameTime, commandBuffer, camera, globalDescriptorSets[frameIndex]};
-
+                
                 //update
                 GLobalUbo ubo{};
                 ubo.projectionView = camera.getProjectionMatrix() * camera.getView();
-                // PrintMatrix(ubo.projectionView);
-                uniformBuffers[frameIndex]->writeToIndex(&ubo, frameIndex);
+                ubo.lightPosition = dynamicLightPosition;
+                uniformBuffers[frameIndex]->writeToBuffer(&ubo);
                 uniformBuffers[frameIndex]->flush();
  
                 //render
@@ -127,23 +135,26 @@ namespace vkt {
 
     void Application::loadGameObjects()
     {
-        std::shared_ptr<vktModel> flatVaseModel = vktModel::createModelFromFile(m_device, "F:/06_YouTube/03_VulkanTutroials/VkTutroial/models/flat_vase.obj");
+        std::shared_ptr<vktModel> lveModel = vktModel::createModelFromFile(m_device, "F:/06_YouTube/03_VulkanTutroials/VkTutroial/models/flat_vase.obj");
+        auto flatVase = VktGameObject::createGameObject();
+        flatVase.model = lveModel;
+        flatVase.transform.translation = {-0.5f, 0.4f, 0.f};
+        flatVase.transform.scale = glm::vec3(3.f, 1.5f, 3.f);
+        m_gameObjects.push_back(std::move(flatVase));
 
-        auto gameObj = VktGameObject::createGameObject();
-        gameObj.model = flatVaseModel;
-        gameObj.transform.translation = {-0.5f, 0.4f, 2.5f};
-        gameObj.transform.scale = glm::vec3(3.f, 1.5f, 3.f);
+        lveModel = vktModel::createModelFromFile(m_device, "F:/06_YouTube/03_VulkanTutroials/VkTutroial/models/smooth_vase.obj");
+        auto smoothVase = VktGameObject::createGameObject();
+        smoothVase.model = lveModel;
+        smoothVase.transform.translation = {0.5f, 0.4f, 0.f};
+        smoothVase.transform.scale = glm::vec3(3.f, 1.5f, 3.f);
+        m_gameObjects.push_back(std::move(smoothVase));
 
-        m_gameObjects.push_back(std::move(gameObj));
-
-        std::shared_ptr<vktModel> smoothVaseModel = vktModel::createModelFromFile(m_device, "F:/06_YouTube/03_VulkanTutroials/VkTutroial/models/smooth_vase.obj");
-
-        auto gameObj2 = VktGameObject::createGameObject();
-        gameObj2.model = smoothVaseModel;
-        gameObj2.transform.translation = {0.5f, 0.4f, 2.5f};
-        gameObj2.transform.scale = glm::vec3(3.f, 1.5f, 3.f);
-
-        m_gameObjects.push_back(std::move(gameObj2));
+        lveModel = vktModel::createModelFromFile(m_device, "F:/06_YouTube/03_VulkanTutroials/VkTutroial/models/quad.obj");
+        auto floor = VktGameObject::createGameObject();
+        floor.model = lveModel;
+        floor.transform.translation = {0.f, .5f, 0.f};
+        floor.transform.scale = {3.f, 1.f, 3.f};
+        m_gameObjects.push_back(std::move(floor));
     }
 
 }

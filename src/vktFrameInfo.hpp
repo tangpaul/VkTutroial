@@ -10,9 +10,9 @@ namespace vkt
     {
         int frameIndex;
         float frameTime;
-        VkCommandBuffer commandBuffer;
-        vktCamera camera;
-        VkDescriptorSet gloabalDescriptorSet;
+        VkCommandBuffer& commandBuffer;
+        vktCamera& camera;
+        VkDescriptorSet& gloabalDescriptorSet;
     };
     
 } // namespace vkt

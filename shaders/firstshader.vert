@@ -6,11 +6,15 @@ layout(location = 2) in vec3 normal;
 layout(location = 3) in vec2 uv;
 
 layout(location = 0) out vec3 fragColor;
+layout(location = 1) out vec3 fragPosWorld;
+layout(location = 2) out vec3 fragNormalWorld;
 
 layout(set = 0, binding = 0) uniform GlobalUbo
 {
     mat4 projectionMatrix;
-    vec3 directionToLight;
+    vec4 ambientColor; 
+    vec3 lightPosition;
+    vec4 lightColor; 
 } ubo;
 
 layout(push_constant) uniform PushConstants
@@ -19,18 +23,14 @@ layout(push_constant) uniform PushConstants
     mat4 noramlMaxtrix;
 } pushConstants;
 
-const vec3 DIRECTION_TO_LIGHT = normalize(vec3(1.0, -3.0, -1.0));
-const float AMBIENT = 0.02;
-
 void main()
 {
-    gl_Position = ubo.projectionMatrix * pushConstants.modelMatrix * vec4(position, 1.0);
+    vec4 positionWorldSpace = pushConstants.modelMatrix * vec4(position, 1.0);
+    gl_Position = ubo.projectionMatrix * positionWorldSpace;
 
     // 将法线转换到世界空间
-    // vec3 normalWorldSpace = normalize(mat3(pushConstants.modelMatrix) * normal);
-    vec3 normalWorldSpace = normalize(mat3(pushConstants.noramlMaxtrix) * normal);
-    // 计算光照强度 通过点乘法计算光照强度 (越垂直越亮)
-    float lightIndensity = AMBIENT + max(dot(normalWorldSpace, DIRECTION_TO_LIGHT), 0.0);
-
-    fragColor = lightIndensity * color;
+    fragNormalWorld = normalize(mat3(pushConstants.noramlMaxtrix) * normal);
+    fragPosWorld = positionWorldSpace.xyz;
+    
+    fragColor = color;
 }
