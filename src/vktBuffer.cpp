@@ -21,7 +21,7 @@ VkDeviceSize vktBuffer::getAlignment(VkDeviceSize instanceSize, VkDeviceSize min
   }
   return instanceSize;
 }
- 
+
 vktBuffer::vktBuffer(
     vktEngineDevice &device,
     VkDeviceSize instanceSize,

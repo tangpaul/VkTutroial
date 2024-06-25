@@ -6,6 +6,7 @@ project(VkTutorial)
 # 设置C++标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # 设置脚本文件的路径
 get_filename_component(PARENT_DIR ${CMAKE_BINARY_DIR} DIRECTORY)

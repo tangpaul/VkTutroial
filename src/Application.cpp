@@ -49,7 +49,7 @@ namespace vkt {
         }
     }
 
-    void Application::run(){
+    void Application::run() {
         std::vector<std::unique_ptr<vktBuffer>> uniformBuffers(vktEngineSwapChain::MAX_FRAMES_IN_FLIGHT);
         for (size_t i = 0; i < uniformBuffers.size(); i++)
         {

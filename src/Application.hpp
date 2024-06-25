@@ -36,5 +36,4 @@ namespace vkt{
         std::unique_ptr<vktDescriptorPool> globalPool{};
         std::vector<VktGameObject> m_gameObjects;
     };
-
 }
